@@ -288,15 +288,6 @@
     }
   </style>
 </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-45F8K1EQ3M"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-45F8K1EQ3M');
-</script>
 <body>
 
 <div class="frame">
@@ -354,7 +345,15 @@
     <button class="btn btn-primary" onclick="closeOverlay()">Play Again 🎉</button>
   </div>
 </div>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-45F8K1EQ3M"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'G-45F8K1EQ3M');
+</script>
 <script>
   const PLAYER = 'X', CPU = 'O';
   const WINS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
