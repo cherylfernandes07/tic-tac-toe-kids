@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shatranj-O-Tic | Indian Tic Tac Toe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --saffron:    #FF6700;
+      --deep-red:   #B5001F;
+      --gold:       #E8A900;
+      --ivory:      #FFF8ED;
+      --maroon:     #6B0F1A;
+      --teal:       #007C77;
+      --cream:      #FDF3DC;
+      --shadow:     rgba(107,15,26,0.35);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--maroon);
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(232,169,0,0.18) 0%, transparent 55%),
+        radial-gradient(circle at 80% 80%, rgba(255,103,0,0.18) 0%, transparent 55%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(232,169,0,0.10)' stroke-width='1'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3Ccircle cx='30' cy='30' r='12'/%3E%3Cline x1='30' y1='10' x2='30' y2='50'/%3E%3Cline x1='10' y1='30' x2='50' y2='30'/%3E%3Cline x1='15' y1='15' x2='45' y2='45'/%3E%3Cline x1='45' y1='15' x2='15' y2='45'/%3E%3C/g%3E%3C/svg%3E");
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', sans-serif;
+      padding: 24px 16px;
+      color: var(--ivory);
+      overflow-x: hidden;
+    }
+
+    /* ── Decorative border frame ── */
+    .frame {
+      position: relative;
+      background: linear-gradient(145deg, #7a1020, #4a0810);
+      border: 3px solid var(--gold);
+      border-radius: 18px;
+      padding: 36px 32px 32px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow:
+        0 0 0 6px var(--maroon),
+        0 0 0 9px var(--gold),
+        0 0 40px var(--shadow),
+        inset 0 0 30px rgba(0,0,0,0.25);
+    }
+
+    /* Corner lotuses */
+    .frame::before, .frame::after {
+      content: '❋';
+      position: absolute;
+      font-size: 22px;
+      color: var(--gold);
+      opacity: 0.85;
+      line-height: 1;
+    }
+    .frame::before { top: 8px; left: 12px; }
+    .frame::after  { bottom: 8px; right: 12px; }
+
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 6px; }
+
+    .om {
+      font-size: 28px;
+      color: var(--gold);
+      display: block;
+      line-height: 1;
+      margin-bottom: 4px;
+      animation: pulse 3s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.7; transform: scale(1.08); }
+    }
+
+    h1 {
+      font-family: 'Yatra One', cursive;
+      font-size: clamp(26px, 6vw, 34px);
+      color: var(--gold);
+      text-shadow: 2px 2px 0 var(--deep-red), 0 0 20px rgba(232,169,0,0.4);
+      letter-spacing: 1px;
+      line-height: 1.1;
+    }
+    .subtitle {
+      font-size: 11px;
+      color: rgba(255,248,237,0.55);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 14px 0;
+      color: var(--gold);
+      opacity: 0.6;
+      font-size: 16px;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+    }
+
+    /* ── Status bar ── */
+    #status {
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: var(--ivory);
+      min-height: 26px;
+      margin-bottom: 16px;
+      transition: color 0.3s;
+    }
+    #status .highlight { color: var(--gold); }
+
+    /* ── Board ── */
+    #board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .cell {
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, rgba(255,248,237,0.06), rgba(255,248,237,0.02));
+      border: 2px solid rgba(232,169,0,0.45);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(32px, 9vw, 52px);
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+    .cell:hover:not(.taken) {
+      background: rgba(232,169,0,0.12);
+      border-color: var(--gold);
+      transform: scale(1.04);
+    }
+    .cell.taken { cursor: default; }
+    .cell.win-cell {
+      background: rgba(232,169,0,0.22);
+      border-color: var(--gold);
+      animation: winGlow 0.6s ease forwards;
+    }
+    @keyframes winGlow {
+      0%   { box-shadow: none; }
+      60%  { box-shadow: 0 0 18px var(--gold); }
+      100% { box-shadow: 0 0 10px rgba(232,169,0,0.5); }
+    }
+
+    .cell-symbol {
+      display: block;
+      animation: popIn 0.25s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+    @keyframes popIn {
+      from { transform: scale(0) rotate(-15deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0deg);   opacity: 1; }
+    }
+
+    /* ── Score bar ── */
+    .score-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(232,169,0,0.3);
+      border-radius: 10px;
+      padding: 8px 16px;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    .score-item { text-align: center; }
+    .score-label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,248,237,0.5);
+      margin-bottom: 2px;
+    }
+    .score-num {
+      font-family: 'Yatra One', cursive;
+      font-size: 22px;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .score-divider { color: rgba(232,169,0,0.35); font-size: 20px; }
+
+    /* ── Buttons ── */
+    .btn {
+      width: 100%;
+      padding: 12px;
+      font-family: 'Yatra One', cursive;
+      font-size: 16px;
+      letter-spacing: 1px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 6px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--saffron), var(--deep-red));
+      color: var(--ivory);
+      box-shadow: 0 4px 14px rgba(181,0,31,0.4);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(181,0,31,0.55);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255,248,237,0.3);
+      letter-spacing: 1px;
+    }
+
+    /* ── Overlay for winner ── */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(74,8,16,0.88);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+    #overlay.show { display: flex; animation: fadeIn 0.35s ease; }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+    .overlay-card {
+      background: linear-gradient(145deg, #7a1020, #4a0810);
+      border: 3px solid var(--gold);
+      border-radius: 18px;
+      padding: 36px 32px;
+      text-align: center;
+      box-shadow: 0 0 0 6px var(--maroon), 0 0 40px rgba(0,0,0,0.6);
+      animation: bounceIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      max-width: 320px;
+      width: 90%;
+    }
+    @keyframes bounceIn {
+      from { transform: scale(0.6); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+
+    .overlay-icon { font-size: 54px; display: block; margin-bottom: 10px; }
+    .overlay-title {
+      font-family: 'Yatra One', cursive;
+      font-size: 28px;
+      color: var(--gold);
+      text-shadow: 2px 2px 0 var(--deep-red);
+      margin-bottom: 6px;
+    }
+    .overlay-msg { font-size: 14px; color: rgba(255,248,237,0.7); margin-bottom: 14px; }
+    #overlayFact {
+      font-size: 12px;
+      color: var(--gold);
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(232,169,0,0.3);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+<div class="frame">
+  <div class="header">
+    <span class="om">ॐ</span>
+    <h1>Tik-Tak-Toe</h1>
+    <p class="subtitle">An Indian Classic</p>
+  </div>
+
+  <div class="divider">✦</div>
+
+  <div class="score-bar">
+    <div class="score-item">
+      <span class="score-label">You 🪷</span>
+      <span class="score-num" id="scorePlayer">0</span>
+    </div>
+    <div class="score-divider">|</div>
+    <div class="score-item">
+      <span class="score-label">Draws</span>
+      <span class="score-num" id="scoreDraw">0</span>
+    </div>
+    <div class="score-divider">|</div>
+    <div class="score-item">
+      <span class="score-label">CPU 🐘</span>
+      <span class="score-num" id="scoreCPU">0</span>
+    </div>
+  </div>
+
+  <div id="status">Your move, brave warrior! 🪷</div>
+
+  <div id="board">
+    <div class="cell" data-i="0"></div>
+    <div class="cell" data-i="1"></div>
+    <div class="cell" data-i="2"></div>
+    <div class="cell" data-i="3"></div>
+    <div class="cell" data-i="4"></div>
+    <div class="cell" data-i="5"></div>
+    <div class="cell" data-i="6"></div>
+    <div class="cell" data-i="7"></div>
+    <div class="cell" data-i="8"></div>
+  </div>
+
+  <button class="btn btn-primary" onclick="resetGame()">🔄 New Game</button>
+</div>
+
+<div class="footer">✦ May Lakshmi bless your moves ✦</div>
+
+<!-- Win/Draw overlay -->
+<div id="overlay">
+  <div class="overlay-card">
+    <span class="overlay-icon" id="overlayIcon"></span>
+    <div class="overlay-title" id="overlayTitle"></div>
+    <div class="overlay-msg" id="overlayMsg"></div>
+    <div id="overlayFact"></div>
+    <button class="btn btn-primary" onclick="closeOverlay()">Play Again 🎉</button>
+  </div>
+</div>
+
+<script>
+  const PLAYER = 'X', CPU = 'O';
+  const WINS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+
+  // Symbols: player = lotus, cpu = elephant (rendered as emoji text)
+  const SYM = { X: '🪷', O: '🐘' };
+
+  let board, gameActive, scores = { player: 0, draw: 0, cpu: 0 };
+
+  function init() {
+    board = Array(9).fill(null);
+    gameActive = true;
+    document.querySelectorAll('.cell').forEach(c => {
+      c.innerHTML = '';
+      c.classList.remove('taken', 'win-cell');
+    });
+    setStatus("Your move, brave warrior! 🪷");
+  }
+
+  function setStatus(msg) {
+    document.getElementById('status').innerHTML = msg;
+  }
+
+  function checkWinner(b) {
+    for (const [a, x, c] of WINS) {
+      if (b[a] && b[a] === b[x] && b[a] === b[c]) return { winner: b[a], line: [a, x, c] };
+    }
+    if (b.every(v => v)) return { winner: 'draw' };
+    return null;
+  }
+
+  function highlightWin(line) {
+    line.forEach(i => document.querySelector(`.cell[data-i="${i}"]`).classList.add('win-cell'));
+  }
+
+  function handleResult(result) {
+    gameActive = false;
+    if (result.winner === 'draw') {
+      scores.draw++;
+      showOverlay('🤝', 'Stalemate!', 'A worthy draw — the gods are balanced.', 'draw');
+    } else if (result.winner === PLAYER) {
+      scores.player++;
+      highlightWin(result.line);
+      showOverlay('🏆', 'Victory!', 'Jai Ho! You have outsmarted the machine!', 'win');
+    } else {
+      scores.cpu++;
+      highlightWin(result.line);
+      showOverlay('🐘', 'Defeat!', 'The elephant prevails. Try again!', 'loss');
+    }
+    updateScores();
+  }
+
+  function updateScores() {
+    document.getElementById('scorePlayer').textContent = scores.player;
+    document.getElementById('scoreDraw').textContent   = scores.draw;
+    document.getElementById('scoreCPU').textContent    = scores.cpu;
+  }
+
+  // ── Kid-friendly AI ──
+  // The elephant is a bit sleepy! It will:
+  //   1. Always take a winning move if it has one (so it's not totally silly)
+  //   2. Only block the player ~35% of the time (often lets kids win!)
+  //   3. Otherwise pick a random empty cell
+
+  function getEmpty(b) {
+    return b.reduce((acc, v, i) => { if (!v) acc.push(i); return acc; }, []);
+  }
+
+  function findWinningMove(b, mark) {
+    for (const [a, x, c] of WINS) {
+      const line = [b[a], b[x], b[c]];
+      const cells = [a, x, c];
+      const marks = line.filter(v => v === mark).length;
+      const empty = line.filter(v => !v).length;
+      if (marks === 2 && empty === 1) {
+        return cells[line.indexOf(null)];
+      }
+    }
+    return -1;
+  }
+
+  function cpuPlay() {
+    if (!gameActive) return;
+    setStatus('🐘 CPU is thinking...');
+    setTimeout(() => {
+      const empty = getEmpty(board);
+      if (!empty.length) return;
+
+      let move = -1;
+
+      // 1. Take a win if available (always)
+      move = findWinningMove(board, CPU);
+
+      // 2. Block player only 35% of the time — lets kids win more often!
+      if (move === -1 && Math.random() < 0.35) {
+        move = findWinningMove(board, PLAYER);
+      }
+
+      // 3. Otherwise pick a random empty cell
+      if (move === -1) {
+        move = empty[Math.floor(Math.random() * empty.length)];
+      }
+
+      board[move] = CPU;
+      const cell = document.querySelector(`.cell[data-i="${move}"]`);
+      cell.innerHTML = `<span class="cell-symbol">${SYM[CPU]}</span>`;
+      cell.classList.add('taken');
+      const result = checkWinner(board);
+      if (result) { handleResult(result); return; }
+      setStatus("Your move, brave warrior! 🪷");
+    }, 420);
+  }
+
+  document.querySelectorAll('.cell').forEach(cell => {
+    cell.addEventListener('click', () => {
+      const i = +cell.dataset.i;
+      if (!gameActive || board[i]) return;
+      board[i] = PLAYER;
+      cell.innerHTML = `<span class="cell-symbol">${SYM[PLAYER]}</span>`;
+      cell.classList.add('taken');
+      const result = checkWinner(board);
+      if (result) { handleResult(result); return; }
+      cpuPlay();
+    });
+  });
+
+  const INDIA_FACTS = [
+    "🇮🇳 India invented the number zero — without it, no computers would exist!",
+    "🐯 India is home to more tigers than any other country in the world.",
+    "♟️ Chess was invented in India over 1,500 years ago!",
+    "🌊 India has the world's largest school with over 55,000 students!",
+    "🧮 India gave the world the decimal number system used in all of maths.",
+    "💎 Until the 18th century, India was the only place diamonds were found.",
+    "🚀 India reached Mars on its very first attempt in 2014 — a world first!",
+    "🍛 India has more vegetarians than any other country — over 500 million!",
+    "🎲 Snakes & Ladders was invented in India to teach children about karma.",
+    "🌿 Yoga was born in India more than 5,000 years ago.",
+    "🦚 The peacock, India's national bird, can spread its feathers into a giant fan.",
+    "🏏 Cricket is so loved in India it is called the country's second religion.",
+    "🌸 The lotus, India's national flower, blooms beautifully even in muddy water.",
+    "🔢 The concept of infinity was first explored by Indian mathematician Brahmagupta.",
+    "🎵 India has over 22 official languages and hundreds more spoken across the land!",
+  ];
+
+  function showOverlay(icon, title, msg) {
+    document.getElementById('overlayIcon').textContent  = icon;
+    document.getElementById('overlayTitle').textContent = title;
+    document.getElementById('overlayMsg').textContent   = msg;
+    const fact = INDIA_FACTS[Math.floor(Math.random() * INDIA_FACTS.length)];
+    document.getElementById('overlayFact').textContent  = fact;
+    document.getElementById('overlay').classList.add('show');
+  }
+
+  function closeOverlay() {
+    document.getElementById('overlay').classList.remove('show');
+    init();
+  }
+
+  function resetGame() { closeOverlay(); init(); }
+
+  init();
+</script>
+</body>
+</html>
