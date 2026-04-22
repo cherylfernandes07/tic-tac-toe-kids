@@ -12,97 +12,150 @@
 </script>  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Shatranj-O-Tic | Indian Tic Tac Toe</title>
-  <link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <title>Tic Tac Toe | Kids Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&family=Fredoka:wght@400;500;700&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --saffron:    #FF6700;
-      --deep-red:   #B5001F;
-      --gold:       #E8A900;
-      --ivory:      #FFF8ED;
-      --maroon:     #6B0F1A;
-      --teal:       #007C77;
-      --cream:      #FDF3DC;
-      --shadow:     rgba(107,15,26,0.35);
+      --sky: #8fd6ff;
+      --sun: #ffd84d;
+      --mint: #6fd39c;
+      --pink: #ff80bf;
+      --orange: #ff9f4a;
+      --grape: #5a4ed5;
+      --card: #fff8eb;
+      --ink: #2f365f;
+      --white: #ffffff;
+      --shadow: rgba(47, 54, 95, 0.2);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       min-height: 100vh;
-      background-color: var(--maroon);
+      background-color: var(--sky);
       background-image:
-        radial-gradient(circle at 20% 20%, rgba(232,169,0,0.18) 0%, transparent 55%),
-        radial-gradient(circle at 80% 80%, rgba(255,103,0,0.18) 0%, transparent 55%),
-        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(232,169,0,0.10)' stroke-width='1'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3Ccircle cx='30' cy='30' r='12'/%3E%3Cline x1='30' y1='10' x2='30' y2='50'/%3E%3Cline x1='10' y1='30' x2='50' y2='30'/%3E%3Cline x1='15' y1='15' x2='45' y2='45'/%3E%3Cline x1='45' y1='15' x2='15' y2='45'/%3E%3C/g%3E%3C/svg%3E");
+        radial-gradient(circle at 12% 14%, rgba(255,255,255,0.72) 0 8%, transparent 9%),
+        radial-gradient(circle at 84% 18%, rgba(255,255,255,0.62) 0 6%, transparent 7%),
+        radial-gradient(circle at 20% 90%, rgba(255,216,77,0.3) 0 10%, transparent 11%),
+        linear-gradient(180deg, var(--sky) 0%, #bcefff 45%, #fff3c3 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-family: 'Poppins', sans-serif;
+      font-family: 'Baloo 2', cursive;
       padding: 24px 16px;
-      color: var(--ivory);
+      color: var(--ink);
       overflow-x: hidden;
+      position: relative;
+      isolation: isolate;
+    }
+
+    body::before,
+    body::after {
+      content: '';
+      position: fixed;
+      inset: -10vh -10vw;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.45;
+      background-repeat: repeat;
+      background-size: 220px 220px;
+      mix-blend-mode: soft-light;
+    }
+
+    body::before {
+      background-image:
+        radial-gradient(circle at 35px 30px, rgba(255,128,191,0.9) 0 8px, transparent 9px),
+        radial-gradient(circle at 160px 70px, rgba(255,216,77,0.88) 0 7px, transparent 8px),
+        radial-gradient(circle at 90px 150px, rgba(111,211,156,0.9) 0 9px, transparent 10px),
+        radial-gradient(circle at 180px 185px, rgba(255,159,74,0.88) 0 6px, transparent 7px);
+      animation: candyFloatA 24s linear infinite;
+    }
+
+    body::after {
+      opacity: 0.3;
+      background-size: 260px 260px;
+      background-image:
+        radial-gradient(circle at 45px 200px, rgba(90,78,213,0.7) 0 7px, transparent 8px),
+        radial-gradient(circle at 130px 40px, rgba(255,255,255,0.95) 0 6px, transparent 7px),
+        radial-gradient(circle at 210px 120px, rgba(255,128,191,0.75) 0 8px, transparent 9px);
+      animation: candyFloatB 32s linear infinite;
+    }
+
+    body > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes candyFloatA {
+      0% { transform: translate3d(0, 0, 0); }
+      50% { transform: translate3d(-20px, -32px, 0); }
+      100% { transform: translate3d(-40px, -64px, 0); }
+    }
+
+    @keyframes candyFloatB {
+      0% { transform: translate3d(0, 0, 0); }
+      50% { transform: translate3d(22px, -24px, 0); }
+      100% { transform: translate3d(44px, -48px, 0); }
     }
 
     /* ── Decorative border frame ── */
     .frame {
       position: relative;
-      background: linear-gradient(145deg, #7a1020, #4a0810);
-      border: 3px solid var(--gold);
-      border-radius: 18px;
-      padding: 36px 32px 32px;
+      background: linear-gradient(155deg, #fff8ef, #fff2df);
+      border: 4px solid var(--white);
+      border-radius: 26px;
+      padding: 30px 24px 24px;
       width: 100%;
       max-width: 420px;
       box-shadow:
-        0 0 0 6px var(--maroon),
-        0 0 0 9px var(--gold),
-        0 0 40px var(--shadow),
-        inset 0 0 30px rgba(0,0,0,0.25);
+        0 12px 0 var(--mint),
+        0 22px 28px var(--shadow);
     }
 
-    /* Corner lotuses */
+    /* Corner stars */
     .frame::before, .frame::after {
-      content: '❋';
+      content: '★';
       position: absolute;
       font-size: 22px;
-      color: var(--gold);
-      opacity: 0.85;
+      color: #ffb84c;
+      opacity: 1;
       line-height: 1;
     }
-    .frame::before { top: 8px; left: 12px; }
-    .frame::after  { bottom: 8px; right: 12px; }
+    .frame::before { top: 10px; left: 14px; }
+    .frame::after  { top: 10px; right: 14px; }
 
     /* ── Header ── */
-    .header { text-align: center; margin-bottom: 6px; }
+    .header { text-align: center; margin-bottom: 10px; }
 
     .om {
-      font-size: 28px;
-      color: var(--gold);
+      font-size: 24px;
+      color: var(--pink);
       display: block;
       line-height: 1;
-      margin-bottom: 4px;
-      animation: pulse 3s ease-in-out infinite;
+      margin-bottom: 6px;
+      animation: bounce 2.8s ease-in-out infinite;
     }
-    @keyframes pulse {
-      0%,100% { opacity: 1; transform: scale(1); }
-      50%      { opacity: 0.7; transform: scale(1.08); }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-4px); }
     }
 
     h1 {
-      font-family: 'Yatra One', cursive;
-      font-size: clamp(26px, 6vw, 34px);
-      color: var(--gold);
-      text-shadow: 2px 2px 0 var(--deep-red), 0 0 20px rgba(232,169,0,0.4);
-      letter-spacing: 1px;
-      line-height: 1.1;
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(30px, 7vw, 40px);
+      color: var(--grape);
+      text-shadow: 0 3px 0 var(--white), 0 8px 18px rgba(90,78,213,0.25);
+      letter-spacing: 0.5px;
+      line-height: 1.05;
     }
     .subtitle {
-      font-size: 11px;
-      color: rgba(255,248,237,0.55);
-      letter-spacing: 3px;
+      font-size: 12px;
+      color: #5c7396;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      margin-top: 3px;
+      margin-top: 2px;
+      font-weight: 700;
     }
 
     /* ── Divider ── */
@@ -110,30 +163,31 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      margin: 14px 0;
-      color: var(--gold);
-      opacity: 0.6;
+      margin: 12px 0 14px;
+      color: var(--orange);
+      opacity: 1;
       font-size: 16px;
     }
     .divider::before, .divider::after {
       content: '';
       flex: 1;
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(to right, #ffd36a, #ffa95d, #ffd36a);
     }
 
     /* ── Status bar ── */
     #status {
       text-align: center;
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      color: var(--ivory);
-      min-height: 26px;
-      margin-bottom: 16px;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      color: #3b5f86;
+      min-height: 30px;
+      margin-bottom: 14px;
       transition: color 0.3s;
     }
-    #status .highlight { color: var(--gold); }
+    #status .highlight { color: var(--grape); }
 
     /* ── Board ── */
     #board {
@@ -145,34 +199,34 @@
 
     .cell {
       aspect-ratio: 1;
-      background: linear-gradient(135deg, rgba(255,248,237,0.06), rgba(255,248,237,0.02));
-      border: 2px solid rgba(232,169,0,0.45);
-      border-radius: 12px;
+      background: #ffffff;
+      border: 3px solid #cce9ff;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: clamp(32px, 9vw, 52px);
       cursor: pointer;
-      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+      transition: transform 0.15s, background 0.2s, border-color 0.2s, box-shadow 0.2s;
       position: relative;
       overflow: hidden;
       user-select: none;
     }
     .cell:hover:not(.taken) {
-      background: rgba(232,169,0,0.12);
-      border-color: var(--gold);
-      transform: scale(1.04);
+      background: #f1fbff;
+      border-color: #8ed3ff;
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 16px rgba(52,132,196,0.18);
     }
     .cell.taken { cursor: default; }
     .cell.win-cell {
-      background: rgba(232,169,0,0.22);
-      border-color: var(--gold);
-      animation: winGlow 0.6s ease forwards;
+      background: #fff6bb;
+      border-color: var(--sun);
+      animation: winGlow 0.5s ease forwards;
     }
     @keyframes winGlow {
-      0%   { box-shadow: none; }
-      60%  { box-shadow: 0 0 18px var(--gold); }
-      100% { box-shadow: 0 0 10px rgba(232,169,0,0.5); }
+      0%   { box-shadow: 0 0 0 rgba(255,216,77,0); }
+      100% { box-shadow: 0 0 16px rgba(255,216,77,0.85); }
     }
 
     .cell-symbol {
@@ -189,61 +243,67 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(0,0,0,0.25);
-      border: 1px solid rgba(232,169,0,0.3);
-      border-radius: 10px;
-      padding: 8px 16px;
-      margin-bottom: 16px;
+      background: #eef8ff;
+      border: 2px solid #cce9ff;
+      border-radius: 14px;
+      padding: 8px 14px;
+      margin-bottom: 14px;
       font-size: 13px;
     }
     .score-item { text-align: center; }
     .score-label {
       display: block;
       font-size: 10px;
-      letter-spacing: 1.5px;
+      letter-spacing: 1px;
       text-transform: uppercase;
-      color: rgba(255,248,237,0.5);
-      margin-bottom: 2px;
+      color: #6482a8;
+      margin-bottom: 1px;
+      font-weight: 700;
     }
     .score-num {
-      font-family: 'Yatra One', cursive;
-      font-size: 22px;
-      color: var(--gold);
+      font-family: 'Fredoka', sans-serif;
+      font-size: 24px;
+      color: var(--grape);
       line-height: 1;
     }
-    .score-divider { color: rgba(232,169,0,0.35); font-size: 20px; }
+    .score-divider { color: #9ecdf3; font-size: 18px; }
 
     /* ── Buttons ── */
     .btn {
       width: 100%;
       padding: 12px;
-      font-family: 'Yatra One', cursive;
-      font-size: 16px;
-      letter-spacing: 1px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
       border: none;
-      border-radius: 10px;
+      border-radius: 14px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: transform 0.15s, box-shadow 0.2s;
       margin-top: 6px;
     }
     .btn-primary {
-      background: linear-gradient(135deg, var(--saffron), var(--deep-red));
-      color: var(--ivory);
-      box-shadow: 0 4px 14px rgba(181,0,31,0.4);
+      background: linear-gradient(135deg, var(--pink), var(--orange));
+      color: #ffffff;
+      box-shadow: 0 6px 0 #e56c9f;
     }
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(181,0,31,0.55);
+      box-shadow: 0 8px 0 #e56c9f;
     }
-    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 0 #e56c9f;
+    }
 
     /* ── Footer ── */
     .footer {
-      margin-top: 18px;
+      margin-top: 20px;
       text-align: center;
-      font-size: 11px;
-      color: rgba(255,248,237,0.3);
-      letter-spacing: 1px;
+      font-size: 12px;
+      color: #3f6086;
+      letter-spacing: 0.5px;
+      font-weight: 700;
     }
 
     /* ── Overlay for winner ── */
@@ -251,7 +311,7 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(74,8,16,0.88);
+      background: rgba(66,99,138,0.45);
       z-index: 100;
       align-items: center;
       justify-content: center;
@@ -261,39 +321,56 @@
     @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 
     .overlay-card {
-      background: linear-gradient(145deg, #7a1020, #4a0810);
-      border: 3px solid var(--gold);
-      border-radius: 18px;
-      padding: 36px 32px;
+      background: linear-gradient(155deg, #fff8ef, #ffeecf);
+      border: 4px solid #ffffff;
+      border-radius: 24px;
+      padding: 28px 22px;
       text-align: center;
-      box-shadow: 0 0 0 6px var(--maroon), 0 0 40px rgba(0,0,0,0.6);
-      animation: bounceIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      box-shadow: 0 12px 0 var(--mint), 0 22px 26px var(--shadow);
+      animation: floatIn 0.35s cubic-bezier(0.2,0.9,0.2,1) forwards;
       max-width: 320px;
       width: 90%;
     }
-    @keyframes bounceIn {
-      from { transform: scale(0.6); opacity: 0; }
-      to   { transform: scale(1);   opacity: 1; }
+    @keyframes floatIn {
+      from { transform: translateY(12px) scale(0.95); opacity: 0; }
+      to   { transform: translateY(0) scale(1); opacity: 1; }
     }
 
-    .overlay-icon { font-size: 54px; display: block; margin-bottom: 10px; }
+    .overlay-icon { font-size: 52px; display: block; margin-bottom: 8px; }
     .overlay-title {
-      font-family: 'Yatra One', cursive;
-      font-size: 28px;
-      color: var(--gold);
-      text-shadow: 2px 2px 0 var(--deep-red);
-      margin-bottom: 6px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 30px;
+      color: var(--grape);
+      margin-bottom: 4px;
     }
-    .overlay-msg { font-size: 14px; color: rgba(255,248,237,0.7); margin-bottom: 14px; }
+    .overlay-msg {
+      font-size: 16px;
+      color: #4f6d91;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
     #overlayFact {
       font-size: 12px;
-      color: var(--gold);
-      background: rgba(0,0,0,0.25);
-      border: 1px solid rgba(232,169,0,0.3);
-      border-radius: 8px;
-      padding: 8px 12px;
-      margin-bottom: 18px;
-      line-height: 1.5;
+      color: #4f6d91;
+      background: #eef9ff;
+      border: 2px solid #cde9ff;
+      border-radius: 12px;
+      padding: 8px 10px;
+      margin-bottom: 14px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 420px) {
+      .frame { padding: 24px 18px 18px; }
+      .score-num { font-size: 22px; }
+      h1 { font-size: clamp(28px, 9vw, 36px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body::before,
+      body::after {
+        animation: none;
+      }
     }
   </style>
 </head>
@@ -301,16 +378,16 @@
 
 <div class="frame">
   <div class="header">
-    <span class="om">ॐ</span>
-    <h1>Tik-Tak-Toe</h1>
-    <p class="subtitle">An Indian Classic</p>
+    <span class="om">🐰</span>
+    <h1>Tic Tac Toe</h1>
+    <p class="subtitle">Fun for Kids</p>
   </div>
 
   <div class="divider">✦</div>
 
   <div class="score-bar">
     <div class="score-item">
-      <span class="score-label">You 🪷</span>
+      <span class="score-label">You 😀</span>
       <span class="score-num" id="scorePlayer">0</span>
     </div>
     <div class="score-divider">|</div>
@@ -320,12 +397,12 @@
     </div>
     <div class="score-divider">|</div>
     <div class="score-item">
-      <span class="score-label">CPU 🐘</span>
+      <span class="score-label">CPU 🤖</span>
       <span class="score-num" id="scoreCPU">0</span>
     </div>
   </div>
 
-  <div id="status">Your move, brave warrior! 🪷</div>
+  <div id="status">Your turn, superstar!</div>
 
   <div id="board">
     <div class="cell" data-i="0"></div>
@@ -342,7 +419,7 @@
   <button class="btn btn-primary" onclick="resetGame()">🔄 New Game</button>
 </div>
 
-<div class="footer">✦ May Lakshmi bless your moves ✦</div>
+<div class="footer">✦ Keep smiling and have fun ✦</div>
 
 <!-- Win/Draw overlay -->
 <div id="overlay">
@@ -358,8 +435,8 @@
   const PLAYER = 'X', CPU = 'O';
   const WINS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 
-  // Symbols: player = lotus, cpu = elephant (rendered as emoji text)
-  const SYM = { X: '🪷', O: '🐘' };
+  // Symbols: player and CPU are shown with fun emoji markers.
+  const SYM = { X: '😀', O: '🤖' };
 
   let board, gameActive, scores = { player: 0, draw: 0, cpu: 0 };
 
@@ -370,7 +447,7 @@
       c.innerHTML = '';
       c.classList.remove('taken', 'win-cell');
     });
-    setStatus("Your move, brave warrior! 🪷");
+    setStatus("Your turn, superstar!");
   }
 
   function setStatus(msg) {
@@ -393,15 +470,15 @@
     gameActive = false;
     if (result.winner === 'draw') {
       scores.draw++;
-      showOverlay('🤝', 'Stalemate!', 'A worthy draw — the gods are balanced.', 'draw');
+      showOverlay('🤝', 'It\'s a Draw!', 'Great game! Want a rematch?', 'draw');
     } else if (result.winner === PLAYER) {
       scores.player++;
       highlightWin(result.line);
-      showOverlay('🏆', 'Victory!', 'Jai Ho! You have outsmarted the machine!', 'win');
+      showOverlay('🏆', 'You Win!', 'Awesome! You beat the computer!', 'win');
     } else {
       scores.cpu++;
       highlightWin(result.line);
-      showOverlay('🐘', 'Defeat!', 'The elephant prevails. Try again!', 'loss');
+      showOverlay('🤖', 'Computer Wins!', 'Nice try! You will get it next round!', 'loss');
     }
     updateScores();
   }
@@ -413,7 +490,7 @@
   }
 
   // ── Kid-friendly AI ──
-  // The elephant is a bit sleepy! It will:
+  // The CPU is a bit sleepy! It will:
   //   1. Always take a winning move if it has one (so it's not totally silly)
   //   2. Only block the player ~35% of the time (often lets kids win!)
   //   3. Otherwise pick a random empty cell
@@ -437,7 +514,7 @@
 
   function cpuPlay() {
     if (!gameActive) return;
-    setStatus('🐘 CPU is thinking...');
+    setStatus('🤖 CPU is thinking...');
     setTimeout(() => {
       const empty = getEmpty(board);
       if (!empty.length) return;
@@ -463,7 +540,7 @@
       cell.classList.add('taken');
       const result = checkWinner(board);
       if (result) { handleResult(result); return; }
-      setStatus("Your move, brave warrior! 🪷");
+      setStatus("Your turn, superstar!");
     }, 420);
   }
 
@@ -480,29 +557,24 @@
     });
   });
 
-  const INDIA_FACTS = [
-    "🇮🇳 India invented the number zero — without it, no computers would exist!",
-    "🐯 India is home to more tigers than any other country in the world.",
-    "♟️ Chess was invented in India over 1,500 years ago!",
-    "🌊 India has the world's largest school with over 55,000 students!",
-    "🧮 India gave the world the decimal number system used in all of maths.",
-    "💎 Until the 18th century, India was the only place diamonds were found.",
-    "🚀 India reached Mars on its very first attempt in 2014 — a world first!",
-    "🍛 India has more vegetarians than any other country — over 500 million!",
-    "🎲 Snakes & Ladders was invented in India to teach children about karma.",
-    "🌿 Yoga was born in India more than 5,000 years ago.",
-    "🦚 The peacock, India's national bird, can spread its feathers into a giant fan.",
-    "🏏 Cricket is so loved in India it is called the country's second religion.",
-    "🌸 The lotus, India's national flower, blooms beautifully even in muddy water.",
-    "🔢 The concept of infinity was first explored by Indian mathematician Brahmagupta.",
-    "🎵 India has over 22 official languages and hundreds more spoken across the land!",
+  const KID_JOKES = [
+    "Why did the cookie go to the doctor? Because it felt crumbly.",
+    "What kind of tree fits in your hand? A palm tree.",
+    "Why was the math book happy? It had lots of fun problems.",
+    "What do you call a sleeping bull? A bulldozer.",
+    "Why did the banana wear sunscreen? It did not want to peel.",
+    "What do you get when you cross a fish and an elephant? Swimming trunks.",
+    "Why did the teddy bear skip dessert? It was already stuffed.",
+    "What did one wall say to the other wall? I will meet you at the corner.",
+    "Why are ghosts bad at lying? You can see right through them.",
+    "What did the pencil say to the paper? You have got a point.",
   ];
 
   function showOverlay(icon, title, msg) {
     document.getElementById('overlayIcon').textContent  = icon;
     document.getElementById('overlayTitle').textContent = title;
     document.getElementById('overlayMsg').textContent   = msg;
-    const fact = INDIA_FACTS[Math.floor(Math.random() * INDIA_FACTS.length)];
+    const fact = KID_JOKES[Math.floor(Math.random() * KID_JOKES.length)];
     document.getElementById('overlayFact').textContent  = fact;
     document.getElementById('overlay').classList.add('show');
   }
